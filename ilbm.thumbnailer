@@ -1,0 +1,4 @@
+[Thumbnailer Entry]
+TryExec=convert
+Exec=convert %i -thumbnail %s %o
+MimeType=image/x-ilbm;

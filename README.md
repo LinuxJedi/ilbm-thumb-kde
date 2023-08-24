@@ -27,3 +27,7 @@ Once this completes you can install using:
 ```
 sudo make install
 ```
+
+# Other Environments
+
+For GNOME and other display environments, I have included `ilbm.thumbnailer`. This should be copied into `/user/share/thumbnailers` to add support. The thumbnailer file runs ImageMagick from command line to do the conversion, so you do not need this plugin. Unfortunately KDE Plasma does not support the thumbnailer standard.
