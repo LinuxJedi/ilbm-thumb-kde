@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-Q_LOGGING_CATEGORY(LOG_STL, "com.stl-thumb-kde")
+Q_LOGGING_CATEGORY(LOG_ILBM, "com.ilbm-thumb-kde")
 
 extern "C"
 {

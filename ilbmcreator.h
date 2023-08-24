@@ -3,7 +3,7 @@
 #include <KIO/ThumbCreator>
 #include <QLoggingCategory>
 
-Q_DECLARE_LOGGING_CATEGORY(LOG_STL)
+Q_DECLARE_LOGGING_CATEGORY(LOG_ILBM)
 
 class IlbmCreator : public ThumbCreator
 {
