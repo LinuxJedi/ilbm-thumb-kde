@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Service
+Name=ILBM Files
+X-KDE-ServiceTypes=ThumbCreator
+MimeType=image/x-ilbm;
+X-KDE-Library=ilbmthumbnail
+CacheThumbnail=true
+ThumbnailerVersion=1
