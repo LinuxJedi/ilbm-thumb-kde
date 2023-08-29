@@ -2,6 +2,8 @@
 
 This is a plugin for KDE Plasma to provide thumbnail support for Amiga IFF / ILBM files in Dolphin.
 
+![Dolphin example](pics/thumbs.png)
+
 ## Build Instructions
 
 Dependencies:

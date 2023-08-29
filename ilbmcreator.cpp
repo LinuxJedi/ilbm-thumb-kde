@@ -24,6 +24,7 @@ IlbmCreator::~IlbmCreator() = default;
 bool IlbmCreator::create(const QString &path, int width, int height, QImage &img)
 {
     Magick::Image image;
+    Magick::Geometry outsize;
     std::string path_string = path.toStdString();
     const char* path_cstring = path_string.c_str();
 
@@ -34,14 +35,15 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     try {
         image.read(path_cstring);
         image.scale(Magick::Geometry(width, height));
-        image.write(0, 0, width, height, "RGBA", Magick::CharPixel, img_buf);
+        outsize = image.size();
+        image.write(0, 0, outsize.width(), outsize.height(), "RGBA", Magick::CharPixel, img_buf);
     }
     catch(...) {
         return false;
     }
     img = QImage(img_buf,
-                 width,
-                 height,
+                 outsize.width(),
+                 outsize.height(),
                  QImage::Format_RGBA8888,
                  (QImageCleanupFunction) &clean,
                  (void*) this);
