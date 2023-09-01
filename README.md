@@ -6,12 +6,12 @@ This is a plugin for KDE Plasma to provide thumbnail support for Amiga IFF / ILB
 
 ## Build Instructions
 
-Dependencies:
+Dependencies (in Ubuntu):
 * cmake
-* extras-cmake-modules
+* extra-cmake-modules
+* libkf5kio-dev
+* libmagick++-dev
 * qtbase5-dev
-* kio-dev
-* libgraphicsmagick1-dev
 
 The following instructions will build the plugin:
 
