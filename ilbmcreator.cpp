@@ -29,7 +29,7 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     Magick::Image image;
     Magick::Geometry outsize;
     std::string path_string = path.toStdString();
-    char aspectx, aspecty;
+    char aspectx = 0, aspecty = 0;
 
     int img_size = width * height * 4;
     try
@@ -43,9 +43,44 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
 
     /* Extract proper aspect ratio information */
     std::ifstream input(path_string, std::ios::binary);
-    input.seekg(0x22);
-    input.get(aspectx);
-    input.get(aspecty);
+    bool found = false;
+    while (!input.eof())
+    {
+        char tmp;
+        input.get(tmp);
+        if (tmp == 'B')
+        {
+            input.get(tmp);
+            if (tmp != 'M')
+            {
+                input.seekg(-1, input.cur);
+                continue;
+            }
+            input.get(tmp);
+            if (tmp != 'H')
+            {
+                input.seekg(-1, input.cur);
+                continue;
+            }
+            input.get(tmp);
+            if (tmp != 'D')
+            {
+                input.seekg(-1, input.cur);
+                continue;
+            }
+            else
+            {
+                found = true;
+                break;
+            }
+        }
+    }
+    if (found)
+    {
+        input.seekg(0x12, input.cur);
+        input.get(aspectx);
+        input.get(aspecty);
+    }
     input.close();
     try
     {
