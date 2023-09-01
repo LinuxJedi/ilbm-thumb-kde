@@ -39,7 +39,21 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
 
     try
     {
+        Magick::Geometry oldsize;
         image.read(path_string);
+        oldsize = image.size();
+        if (oldsize.width() / oldsize.height() >= 3)
+        {
+            oldsize.aspect(true);
+            oldsize.height(oldsize.height() * 2);
+            image.resize(oldsize);
+        }
+        else if (oldsize.width() / oldsize.height() < 1)
+        {
+            oldsize.aspect(true);
+            oldsize.width(oldsize.width() * 2);
+            image.resize(oldsize);
+        }
         image.scale(Magick::Geometry(width, height));
         outsize = image.size();
         image.write(0, 0, outsize.width(), outsize.height(), "RGBA", Magick::CharPixel, img_buf);
