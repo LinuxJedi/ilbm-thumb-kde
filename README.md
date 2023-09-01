@@ -2,7 +2,7 @@
 
 This is a plugin for KDE Plasma to provide thumbnail support for Amiga IFF / ILBM files in Dolphin.
 
-It not only resizes the IFF image for thumbnails, but it corrects the aspect ratio for full screen images to 4:3 (ie. 640x200 gets stretched to 640x480 first, 320x400 becomes 640x480).
+It not only resizes the IFF image for thumbnails, but it extracts the aspect ratio for the file and compensates for this. This is because Amigas can have resolutions such as 640x200 and 320x400 on a 4:3 screen, which will make the images seem squashed without the compensation.
 
 ![Dolphin example](pics/thumbs.png)
 

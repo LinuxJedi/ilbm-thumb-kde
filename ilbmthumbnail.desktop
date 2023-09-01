@@ -5,4 +5,4 @@ X-KDE-ServiceTypes=ThumbCreator
 MimeType=image/x-ilbm;
 X-KDE-Library=ilbmthumbnail
 CacheThumbnail=true
-ThumbnailerVersion=1
+ThumbnailerVersion=2

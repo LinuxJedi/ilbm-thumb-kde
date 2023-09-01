@@ -1,5 +1,8 @@
 #include "ilbmcreator.h"
 
+#include <fstream>
+#include <iostream>
+
 #include <Magick++.h>
 #include <QFile>
 #include <QImage>
@@ -26,6 +29,7 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     Magick::Image image;
     Magick::Geometry outsize;
     std::string path_string = path.toStdString();
+    char aspectx, aspecty;
 
     int img_size = width * height * 4;
     try
@@ -37,23 +41,28 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
         return false;
     }
 
+    /* Extract proper aspect ratio information */
+    std::ifstream input(path_string, std::ios::binary);
+    input.seekg(0x22);
+    input.get(aspectx);
+    input.get(aspecty);
+    input.close();
     try
     {
         Magick::Geometry oldsize;
         image.read(path_string);
         oldsize = image.size();
-        size_t owidth = oldsize.width();
-        // Correct aspect on full size images to 4:3
-        if (owidth == 1280 || owidth == 640 || owidth == 320)
+        if (aspectx != aspecty)
         {
-            oldsize.aspect(true);
-            // 320x400 for example
-            if (owidth < oldsize.height())
+            if (aspectx < aspecty)
             {
-                owidth *= 2;
-                oldsize.width(owidth);
+                oldsize.height(oldsize.height() * aspecty / aspectx);
             }
-            oldsize.height(owidth * 3 / 4);
+            else
+            {
+                oldsize.width(oldsize.width() * aspectx / aspecty);
+            }
+            oldsize.aspect(true);
             image.resize(oldsize);
         }
         image.scale(Magick::Geometry(width, height));
