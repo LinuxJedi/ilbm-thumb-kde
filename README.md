@@ -2,6 +2,8 @@
 
 This is a plugin for KDE Plasma to provide thumbnail support for Amiga IFF / ILBM files in Dolphin.
 
+It not only resizes the IFF image for thumbnails, but it corrects the height/width for double height / width pixel images (ie. 640x200 gets stretched to 640x400 first).
+
 ![Dolphin example](pics/thumbs.png)
 
 ## Build Instructions
