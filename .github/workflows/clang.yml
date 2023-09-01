@@ -1,0 +1,28 @@
+name: Clang Static Analysis
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main ]
+
+jobs:
+  scan-build:
+    name: Clang scan-build
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          sudo apt-get update
+          sudo apt-get -y install \
+          clang-tools \
+          cmake \
+          extra-cmake-modules \
+          qtbase5-dev \
+          libkf5kio-dev \
+          libmagick++-dev
+      - run: |
+          mkdir build
+          cd build
+          scan-build --status-bugs cmake ..
+          scan-build --status-bugs make

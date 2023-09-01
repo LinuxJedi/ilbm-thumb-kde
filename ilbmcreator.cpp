@@ -26,19 +26,26 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     Magick::Image image;
     Magick::Geometry outsize;
     std::string path_string = path.toStdString();
-    const char* path_cstring = path_string.c_str();
 
     int img_size = width * height * 4;
-    img_buf = (uchar *) malloc(img_size);
-    if (img_buf == NULL) return false;
+    try
+    {
+        img_buf = new uchar[img_size];
+    }
+    catch (...)
+    {
+        return false;
+    }
 
-    try {
-        image.read(path_cstring);
+    try
+    {
+        image.read(path_string);
         image.scale(Magick::Geometry(width, height));
         outsize = image.size();
         image.write(0, 0, outsize.width(), outsize.height(), "RGBA", Magick::CharPixel, img_buf);
     }
-    catch(...) {
+    catch(...)
+    {
         return false;
     }
     img = QImage(img_buf,
@@ -55,5 +62,5 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
 void clean(void *info)
 {
     IlbmCreator * self = static_cast<IlbmCreator*>(info);
-    free(self->img_buf);
+    delete[] self->img_buf;
 }
