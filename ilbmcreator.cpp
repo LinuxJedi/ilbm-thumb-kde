@@ -42,16 +42,18 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
         Magick::Geometry oldsize;
         image.read(path_string);
         oldsize = image.size();
-        if (oldsize.width() / oldsize.height() >= 3)
+        size_t owidth = oldsize.width();
+        // Correct aspect on full size images to 4:3
+        if (owidth == 1280 || owidth == 640 || owidth == 320)
         {
             oldsize.aspect(true);
-            oldsize.height(oldsize.height() * 2);
-            image.resize(oldsize);
-        }
-        else if (oldsize.width() / oldsize.height() < 1)
-        {
-            oldsize.aspect(true);
-            oldsize.width(oldsize.width() * 2);
+            // 320x400 for example
+            if (owidth < oldsize.height())
+            {
+                owidth *= 2;
+                oldsize.width(owidth);
+            }
+            oldsize.height(owidth * 3 / 4);
             image.resize(oldsize);
         }
         image.scale(Magick::Geometry(width, height));
