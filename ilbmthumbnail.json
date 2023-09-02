@@ -1,0 +1,9 @@
+{
+    "CacheThumbnail": true,
+    "KPlugin": {
+        "MimeTypes": [
+            "image/x-ilbm"
+        ],
+        "Name": "ILBM Images"
+    }
+}

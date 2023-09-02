@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 
+#include <KPluginFactory>
 #include <Magick++.h>
 #include <QFile>
 #include <QImage>
@@ -11,24 +12,22 @@
 #include <string>
 
 Q_LOGGING_CATEGORY(LOG_ILBM, "com.ilbm-thumb-kde")
+K_PLUGIN_CLASS_WITH_JSON(IlbmCreator, "ilbmthumbnail.json")
 
-extern "C"
+IlbmCreator::IlbmCreator(QObject *parent, const QVariantList &args)
+    : KIO::ThumbnailCreator(parent, args)
 {
-    Q_DECL_EXPORT ThumbCreator *new_creator()
-    {
-        return new IlbmCreator();
-    }
-};
-
-IlbmCreator::IlbmCreator() = default;
+}
 
 IlbmCreator::~IlbmCreator() = default;
 
-bool IlbmCreator::create(const QString &path, int width, int height, QImage &img)
+KIO::ThumbnailResult IlbmCreator::create(const KIO::ThumbnailRequest &request)
 {
+    const int width = request.targetSize().width();
+    const int height = request.targetSize().height();
     Magick::Image image;
     Magick::Geometry outsize;
-    std::string path_string = path.toStdString();
+    std::string path_string = QFile::encodeName(request.url().toLocalFile()).data();
     char aspectx = 0, aspecty = 0;
 
     int img_size = width * height * 4;
@@ -38,8 +37,7 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     }
     catch (...)
     {
-        img_buf = nullptr;
-        return false;
+        return KIO::ThumbnailResult::fail();
     }
 
     /* Extract proper aspect ratio information */
@@ -112,23 +110,15 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     }
     catch(...)
     {
-        return false;
+        return KIO::ThumbnailResult::fail();
     }
-    img = QImage(img_buf,
+    QImage img(img_buf,
                  outsize.width(),
                  outsize.height(),
-                 QImage::Format_RGBA8888,
-                 (QImageCleanupFunction) &clean,
-                 (void*) this);
-
-    return true;
-}
-
-
-void clean(void *info)
-{
-    IlbmCreator * self = static_cast<IlbmCreator*>(info);
-    delete[] self->img_buf;
+                 QImage::Format_RGBA8888);
+    img = img.copy();
+    delete[] img_buf;
+    return KIO::ThumbnailResult::pass(img);
 }
 
 #include "ilbmcreator.moc"
