@@ -1,4 +1,4 @@
-name: Clang Static Analysis
+name: Basic test suite
 on:
   push:
     branches: [ main ]
@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  scan-build:
-    name: Clang scan-build
+  test-suite:
+    name: Basic test suite
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
@@ -25,5 +25,6 @@ jobs:
       - run: |
           mkdir build
           cd build
-          scan-build --status-bugs cmake ..
-          scan-build --status-bugs make
+          cmake ..
+          make
+          make test

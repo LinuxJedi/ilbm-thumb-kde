@@ -53,12 +53,4 @@ target_include_directories(ilbmthumbnail PUBLIC ${ImageMagick_Magick++_INCLUDE_D
 install(TARGETS ilbmthumbnail DESTINATION ${LIB_INSTALL_DIR}/qt5/plugins/)
 install(FILES ilbmthumbnail.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
-#set(ilbmthumnail_test_SRCS ilbmcreator.cpp main.cpp)
-#add_executable(test_ilbmthumbnail ${ilbmthumnail_test_SRCS})
-#target_link_libraries(test_ilbmthumbnail
-#    Qt5::Widgets
-#    KF5::KIOWidgets
-#    ${ImageMagick_Magick++_LIBRARY}
-#)
-#target_include_directories(test_ilbmthumbnail PUBLIC ${ImageMagick_Magick++_INCLUDE_DIRS})
-
+add_subdirectory(test)

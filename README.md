@@ -14,6 +14,7 @@ Dependencies (in Ubuntu):
 * libkf5kio-dev
 * libmagick++-dev
 * qtbase5-dev
+* netpbm
 
 The following instructions will build the plugin:
 
