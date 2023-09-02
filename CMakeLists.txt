@@ -26,6 +26,14 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     KIO
 )
 
+include(ECMSetupQtPluginMacroNames)
+ecm_setup_qtplugin_macro_names(
+    JSON_ARG2
+        "EXPORT_THUMBNAILER_WITH_JSON"
+    CONFIG_CODE_VARIABLE
+        PACKAGE_SETUP_AUTOMOC_VARIABLES
+)
+
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
@@ -44,3 +52,13 @@ target_link_libraries(ilbmthumbnail
 target_include_directories(ilbmthumbnail PUBLIC ${ImageMagick_Magick++_INCLUDE_DIRS})
 install(TARGETS ilbmthumbnail DESTINATION ${LIB_INSTALL_DIR}/qt5/plugins/)
 install(FILES ilbmthumbnail.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+
+#set(ilbmthumnail_test_SRCS ilbmcreator.cpp main.cpp)
+#add_executable(test_ilbmthumbnail ${ilbmthumnail_test_SRCS})
+#target_link_libraries(test_ilbmthumbnail
+#    Qt5::Widgets
+#    KF5::KIOWidgets
+#    ${ImageMagick_Magick++_LIBRARY}
+#)
+#target_include_directories(test_ilbmthumbnail PUBLIC ${ImageMagick_Magick++_INCLUDE_DIRS})
+

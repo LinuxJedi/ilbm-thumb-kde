@@ -38,6 +38,7 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
     }
     catch (...)
     {
+        img_buf = nullptr;
         return false;
     }
 
@@ -98,10 +99,15 @@ bool IlbmCreator::create(const QString &path, int width, int height, QImage &img
                 oldsize.width(oldsize.width() * aspectx / aspecty);
             }
             oldsize.aspect(true);
-            image.resize(oldsize);
+            image.scale(oldsize);
         }
-        image.scale(Magick::Geometry(width, height));
         outsize = image.size();
+        /* No point in scaling if the image is already smaller than requested */
+        if ((int)outsize.width() > width || (int)outsize.height() > height)
+        {
+            image.scale(Magick::Geometry(width, height));
+            outsize = image.size();
+        }
         image.write(0, 0, outsize.width(), outsize.height(), "RGBA", Magick::CharPixel, img_buf);
     }
     catch(...)
@@ -124,3 +130,6 @@ void clean(void *info)
     IlbmCreator * self = static_cast<IlbmCreator*>(info);
     delete[] self->img_buf;
 }
+
+#include "ilbmcreator.moc"
+#include "moc_ilbmcreator.cpp"
