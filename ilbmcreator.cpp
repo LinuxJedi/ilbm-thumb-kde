@@ -3,7 +3,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <KPluginFactory>
 #include <Magick++.h>
 #include <QFile>
 #include <QImage>
@@ -12,22 +11,23 @@
 #include <string>
 
 Q_LOGGING_CATEGORY(LOG_ILBM, "com.ilbm-thumb-kde")
-K_PLUGIN_CLASS_WITH_JSON(IlbmCreator, "ilbmthumbnail.json")
 
-IlbmCreator::IlbmCreator(QObject *parent, const QVariantList &args)
-    : KIO::ThumbnailCreator(parent, args)
+extern "C"
 {
-}
+    Q_DECL_EXPORT ThumbCreator *new_creator()
+    {
+        return new IlbmCreator();
+    }
+};
 
+IlbmCreator::IlbmCreator() = default;
 IlbmCreator::~IlbmCreator() = default;
 
-KIO::ThumbnailResult IlbmCreator::create(const KIO::ThumbnailRequest &request)
+bool IlbmCreator::create(const QString &path, int width, int height, QImage &img)
 {
-    const int width = request.targetSize().width();
-    const int height = request.targetSize().height();
     Magick::Image image;
     Magick::Geometry outsize;
-    std::string path_string = QFile::encodeName(request.url().toLocalFile()).data();
+    std::string path_string = path.toStdString();
     char aspectx = 0, aspecty = 0;
 
     int img_size = width * height * 4;
@@ -37,11 +37,15 @@ KIO::ThumbnailResult IlbmCreator::create(const KIO::ThumbnailRequest &request)
     }
     catch (...)
     {
-        return KIO::ThumbnailResult::fail();
+        return false;
     }
 
     /* Extract proper aspect ratio information */
     std::ifstream input(path_string, std::ios::binary);
+    if (input.fail())
+    {
+        return false;
+    }
     bool found = false;
     while (!input.eof())
     {
@@ -110,16 +114,14 @@ KIO::ThumbnailResult IlbmCreator::create(const KIO::ThumbnailRequest &request)
     }
     catch(...)
     {
-        return KIO::ThumbnailResult::fail();
+        return false;
     }
-    QImage img(img_buf,
+    img = QImage(img_buf,
                  outsize.width(),
                  outsize.height(),
                  QImage::Format_RGBA8888);
+    /* Deep copy so we can delete */
     img = img.copy();
     delete[] img_buf;
-    return KIO::ThumbnailResult::pass(img);
+    return true;
 }
-
-#include "ilbmcreator.moc"
-#include "moc_ilbmcreator.cpp"
